@@ -14,7 +14,8 @@
     import utils from '@windy/utils';
 
     import config from './pluginConfig';
-    import { globalCssNode, insertGlobalCss, removeGlobalCss } from './globalCss.js';
+    
+    //import { globalCssNode, insertGlobalCss, removeGlobalCss } from './globalCss.js';
 
     const { log } = console;
     const { title, name } = config;
@@ -78,7 +79,7 @@
 
 
     onMount(() => {
-        insertGlobalCss();
+        //insertGlobalCss();
         
         //grab refs
         for (let e of thisPlugin.window.node.querySelectorAll('[data-ref]')) {
