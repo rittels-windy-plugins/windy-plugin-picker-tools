@@ -80,10 +80,10 @@
     onMount(() => {
         insertGlobalCss();
         
-        let {node} = thisPlugin.window;
-        for (let e of node.querySelectorAll('[data-ref]')) refs[e.dataset.ref]=e;
-        log(refs);
-
+        //grab refs
+        for (let e of thisPlugin.window.node.querySelectorAll('[data-ref]')) {
+            refs[e.dataset.ref]=e;
+        }
 
         mobilePicker = rs.isMobileOrTablet;
 
