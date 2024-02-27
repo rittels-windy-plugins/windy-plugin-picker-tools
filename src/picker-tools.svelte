@@ -1,7 +1,9 @@
+<!--
 <div data-ref="mobile-div-wrapper" id="mobile-div-wrapper" class="rounded-box">
     <div data-ref="picker-div-left" id="picker-div-left"></div>
     <div data-ref="picker-div-right" id="picker-div-right"></div>
 </div>
+-->
 
 <script>
     import bcast from '@windy/broadcast';
@@ -14,25 +16,43 @@
     import utils from '@windy/utils';
 
     import config from './pluginConfig';
-    
-    //import { globalCssNode, insertGlobalCss, removeGlobalCss } from './globalCss.js';
+
+    import { globalCssNode, insertGlobalCss, removeGlobalCss } from './globalCss.js';
 
     const { log } = console;
     const { title, name } = config;
     const { $: u$ } = utils;
 
-    let refs = {};
-
-   // export const onopen = _params => {};
+    // export const onopen = _params => {};
 
     let thisPlugin = plugins[name];
     let activePlugin;
     let pckEl;
     let pt = { pckr: { _icon: null } };
-    let pdr, pdl, mobWrapper;
+    //let pdr, pdl, mobWrapper;
+    //let refs = {};
+
     let mobilePicker;
 
-    //     let checkedForOverride = false;
+    //    let checkedForOverride = false;
+
+    //make html
+
+    const mobWrapper = document.createElement('div');
+    mobWrapper.id = 'mobile-div-wrapper';
+    let pdl = document.createElement('div');
+    pdl.id = 'picker-div-left';
+    let pdr = document.createElement('div');
+    pdr.id = 'picker-div-right';
+    mobWrapper.appendChild(pdl);
+    mobWrapper.appendChild(pdr);
+
+    /*
+    pdl = refs['picker-div-left'];
+        pdr = refs['picker-div-right'];
+
+        mobWrapper = refs['mobile-div-wrapper'];
+*/
 
     bcast.on('pluginOpened', e => {
         if (e == 'plugins') {
@@ -42,7 +62,6 @@
         }
     });
 
-    
     function onOverrideMobilePicker(override) {
         if (!rs.isMobileOrTablet) return; // this line should not be needed.
         mobilePicker = !override;
@@ -77,14 +96,25 @@
             bcast.off('pluginOpened', changeToDesktopPickerIfPreferred);
     }
 
-
     onMount(() => {
-        //insertGlobalCss();
-        
+        thisPlugin.isActive = true;
+
+        //close immediately,  closes embed plugin
+        setTimeout(() => thisPlugin.close());
+        insertGlobalCss();
+
         //grab refs
+        /*
         for (let e of thisPlugin.window.node.querySelectorAll('[data-ref]')) {
-            refs[e.dataset.ref]=e;
+            refs[e.dataset.ref] = e;
         }
+        console.log(refs);
+        pdl = refs['picker-div-left'];
+        pdr = refs['picker-div-right'];
+        mobWrapper = refs['mobile-div-wrapper'];
+*/
+
+        //console.log("pickertool refs", refs);
 
         mobilePicker = rs.isMobileOrTablet;
 
@@ -103,11 +133,6 @@
         document.body.classList.add(mobilePicker ? 'pickerTools-mobile' : 'pickerTools-desk');
 
         //store.on('overrideMobilePicker', onOverrideMobilePicker);
-
-        pdl = refs['picker-div-left'];
-        pdr = refs['picker-div-right'];
-
-        mobWrapper = refs['mobile-div-wrapper'];
 
         ////send text to picker div.
         function mobileDiv(d) {
@@ -168,10 +193,13 @@
         };
 
         pt.fillLeftDiv = function (html, pickerBckgCol = false, mobStyle) {
+            console.log('FILL LEFT DIV');
             //pickerBckgCol=false is transparent,  true= "rgba(68,65,65,0.84)"
             if (pickerBckgCol && !mobilePicker) pdl.style.backgroundColor = 'rgba(68,65,65,0.84)';
             else pdl.style.backgroundColor = 'transparent';
             if (!mobilePicker) {
+                console.log('DESKTOP');
+                console.log(u$('.picker-content'));
                 if (u$('.picker-content')) {
                     //W.pickerDesktop && W.pickerDesktop.popupContent){
                     pckEl = u$('.picker-content'); //W.pickerDesktop.popupContent;
@@ -330,7 +358,13 @@
     pt.getActivePlugin = () => activePlugin;
 
     onDestroy(() => {
-    
+        //dont do anything,  just embed window closes.
+    });
+
+    thisPlugin.exports = pt;
+
+    thisPlugin.closeCompletely = function () {
+        thisPlugin.isActive = false;
         pdr.remove();
         pdl.remove();
         pdr = null;
@@ -340,11 +374,8 @@
         picker.off('pickerOpened', wait4pckr);
         picker.off('pickerClosed', remListeners);
         document.body.classList.remove('pickerTools-mobile', 'pickerTools-desk');
-    });
-
-    thisPlugin.exports = pt;
-
-    
+        removeGlobalCss();
+    };
 </script>
 
 <style lang="less">

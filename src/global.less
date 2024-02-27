@@ -1,3 +1,123 @@
-[data-example-containing-quotes="abc"]{
-    color:red;
+
+
+
+//.picker-div-text {
+//    white-space: nowrap;
+//    padding: 4px;
+    
+//    line-height: 1.1;
+//    color: red;
+//}
+
+#picker-div-right {
+    display:none;
+    white-space: nowrap;
+    padding: 4px;
+    font-size: 12px;
+    line-height: 1.1;
+    span {
+        padding: 0px;
+    }
+    &.show{
+        display:inline-block;
+    }
+}
+
+#picker-div-left {
+    display:none;
+    position: absolute;
+    right: 2px;
+    white-space: nowrap;
+    padding: 4px;
+    font-size: 12px;
+    line-height: 1.1;
+    span {
+        padding: 0px;
+    }
+    &.show{
+        display:inline-block;
+    }
+}
+
+.picker-anchor-mobl {
+    position: fixed; /*absolute;*/
+    top: 85px;
+    /*margin-top: -67px;*/
+    width: 0px;
+    left: 50vw;  //1px;
+}
+
+
+.pickerTools-desk {
+    #picker-div-left {
+        background-color: transparent;
+        border-radius: 8px 0px 0px 8px;
+        margin-right: 1px;
+    }
+    /*
+    .p-empty#picker-div-right {
+        background-color:rgba(68,65,65,0.84);
+        position:relative;
+        top:-16px;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+    .p-empty {
+        width:auto !important;
+    }
+    .p-empty .picker-close-button {
+        left: calc(100%) !important;
+    }
+    .p-empty .picker-share{
+        display:none !important;
+    }
+    */
+    #picker-div-right {
+        padding-right: 20px;
+    }
+    .picker-content{
+        [data-ref='content']{
+            display:table-cell;
+        }
+    }
+}
+
+
+#mobile-div-wrapper{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between; //space-evenly;
+    margin: 0 10px 10px 10px;
+    
+    padding: 0.5em 1em;
+    border: solid 1px gray;
+    overflow: hidden;
+    &.hidden {
+        display:none;
+    }
+}
+
+.pickerTools-mobile{
+    #picker-div-left {
+        /*right: 5px;*/
+        position: relative;
+        //display:inline-block;
+        padding:0px;
+        right:auto;
+        //left: 5vw;
+        //right: 45vw;
+        //border-radius: 4px;
+        background-color: transparent;
+    }
+    #picker-div-right{
+        position:relative;
+        //display:inline-block;
+        padding:0px;
+        /*right: 5px;*/
+        //left: 55vw;
+        //right: 95vw;
+        
+        //border-radius: 4px;
+        background-color: transparent;
+    }
 }
