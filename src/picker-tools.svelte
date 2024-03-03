@@ -1,13 +1,7 @@
-<!--
-<div data-ref="mobile-div-wrapper" id="mobile-div-wrapper" class="rounded-box">
-    <div data-ref="picker-div-left" id="picker-div-left"></div>
-    <div data-ref="picker-div-right" id="picker-div-right"></div>
-</div>
--->
-
 <script>
-    import bcast from '@windy/broadcast';
     import { onDestroy, onMount } from 'svelte';
+
+    import bcast from '@windy/broadcast';
     import plugins from '@windy/plugins';
     import { map } from '@windy/map';
     import { emitter as picker } from '@windy/picker';
@@ -16,28 +10,20 @@
     import utils from '@windy/utils';
 
     import config from './pluginConfig';
-
     import { globalCssNode, insertGlobalCss, removeGlobalCss } from './globalCss.js';
 
     const { log } = console;
     const { title, name } = config;
     const { $: u$ } = utils;
 
-    // export const onopen = _params => {};
-
     let thisPlugin = plugins[name];
     let activePlugin;
     let pckEl;
     let pt = { pckr: { _icon: null } };
-    //let pdr, pdl, mobWrapper;
-    //let refs = {};
 
     let mobilePicker;
 
-    //    let checkedForOverride = false;
-
-    //make html
-
+    // Make html
     const mobWrapper = document.createElement('div');
     mobWrapper.id = 'mobile-div-wrapper';
     let pdl = document.createElement('div');
@@ -47,92 +33,27 @@
     mobWrapper.appendChild(pdl);
     mobWrapper.appendChild(pdr);
 
-    /*
-    pdl = refs['picker-div-left'];
-        pdr = refs['picker-div-right'];
-
-        mobWrapper = refs['mobile-div-wrapper'];
-*/
-
-    bcast.on('pluginOpened', e => {
-        if (e == 'plugins') {
-            for (let e of u$('#plugin-plugins').querySelectorAll('.card')) {
-                if (u$('h3', e).innerHTML == 'Picker Tools') e.classList.add('hidden');
-            }
-        }
-    });
-
-    function onOverrideMobilePicker(override) {
-        if (!rs.isMobileOrTablet) return; // this line should not be needed.
-        mobilePicker = !override;
-        //console.log('onOverrideMobilePicker:  use the mobile picker', mobilePicker);
-        document.body.classList.add(mobilePicker ? 'pickerTools-mobile' : 'pickerTools-desk');
-        document.body.classList.remove(!mobilePicker ? 'pickerTools-mobile' : 'pickerTools-desk');
-        remListeners();
-        wait4pckr();
-        bcast.fire('rqstClose', 'picker-mobile');
-        if (mobilePicker) {
-            bcast.fire('rqstOpen', 'picker-mobile');
-        }
-        if (pdl && pdl.innerHTML) pt.fillLeftDiv(pdl.innerHTML);
-        if (pdr && pdr.innerHTML) pt.fillRightDiv(pdr.innerHTML);
-
-        //console.log("right div contains", pdr.innerHTML);
-    }
-
-    /**
-     * If windy-plugin-picker2 opens,  check if picker should changed.
-     * Then stop listener for pluginOpen
-     */
-    function changeToDesktopPickerIfPreferred(p) {
-        if (p == 'windy-plugin-picker2' || p == 'picker2IsLoaded') {
-            if (store.get('overrideMobilePicker')) {
-                if (mobilePicker) {
-                    onOverrideMobilePicker(true);
-                }
-            }
-        }
-        if (p == 'windy-plugin-picker2')
-            bcast.off('pluginOpened', changeToDesktopPickerIfPreferred);
-    }
-
     onMount(() => {
         thisPlugin.isActive = true;
 
-        //close immediately,  closes embed plugin
-        setTimeout(() => thisPlugin.close());
+        // Close immediately,  once the html has appeared in DOM.
+        // Also remove plugin from stored installedPlugins,  so that it does not appear in the menu.
+        // An pluginConfig option to specify whether should appear in menu would be useful
+        setTimeout(() => {
+            thisPlugin.close();
+            let installedPlugins = store.get('installedPlugins');
+            let ix = installedPlugins.findIndex(e => e.name == name);
+            if (ix >= 0) {
+                installedPlugins.splice(ix, 1);
+                store.remove('installedPlugins');
+                store.set('installedPlugins', installedPlugins);
+            }
+        });
         insertGlobalCss();
-
-        //grab refs
-        /*
-        for (let e of thisPlugin.window.node.querySelectorAll('[data-ref]')) {
-            refs[e.dataset.ref] = e;
-        }
-        console.log(refs);
-        pdl = refs['picker-div-left'];
-        pdr = refs['picker-div-right'];
-        mobWrapper = refs['mobile-div-wrapper'];
-*/
-
-        //console.log("pickertool refs", refs);
 
         mobilePicker = rs.isMobileOrTablet;
 
-        /*
-        if (store.hasProperty('overrideMobilePicker')) {
-            console.log('picker2 module available');
-            changeToDesktopPickerIfPreferred('picker2IsLoaded');
-        } else {
-            console.log(
-                'picker2 module is not available yet,  if desktopOrMobile,  wait for picker2 to open,  then onOverrideMobile(true) if preferred in store',
-            );
-            if (rs.isMobileOrTablet) bcast.on('pluginOpened', changeToDesktopPickerIfPreferred);
-        }
-        */
-
         document.body.classList.add(mobilePicker ? 'pickerTools-mobile' : 'pickerTools-desk');
-
-        //store.on('overrideMobilePicker', onOverrideMobilePicker);
 
         ////send text to picker div.
         function mobileDiv(d) {
@@ -141,15 +62,9 @@
                     mobWrapper.appendChild(pdl);
                     mobWrapper.appendChild(pdr);
                 }
-
-                pckEl = u$('.plugin-content-top'); //W.pickerMobile.popup;
+                pckEl = u$('.plugin-content-top');
 
                 if (!pckEl.contains(d)) {
-                    //pckEl.style.position="fixed";
-                    //let pda=document.createElement("div");
-                    //pda.classList.add("picker-anchor-mobl");
-                    //pckEl.appendChild(pda);
-                    //pda.appendChild(d);
                     pckEl.appendChild(d);
                 }
             }
@@ -179,7 +94,6 @@
 
         pt.fillRightDiv = function (html, mobStyle) {
             if (!mobilePicker) {
-                //(!rs.isMobileOrTablet){
                 if (u$('.picker-content')) {
                     pckEl = u$('.picker-content'); //W.pickerDesktop.popupContent;
                     if (!pckEl.contains(pdr)) {
@@ -201,8 +115,7 @@
                 console.log('DESKTOP');
                 console.log(u$('.picker-content'));
                 if (u$('.picker-content')) {
-                    //W.pickerDesktop && W.pickerDesktop.popupContent){
-                    pckEl = u$('.picker-content'); //W.pickerDesktop.popupContent;
+                    pckEl = u$('.picker-content');
                     if (!pckEl.contains(pdl)) {
                         pckEl.parentNode.style.outlineStyle = 'none';
                         let pda = document.createElement('div');
@@ -357,25 +270,25 @@
     pt.setActivePlugin = plugin => (activePlugin = plugin);
     pt.getActivePlugin = () => activePlugin;
 
-    onDestroy(() => {
-        //dont do anything,  just embed window closes.
-    });
-
-    thisPlugin.exports = pt;
-
-    thisPlugin.closeCompletely = function () {
+    pt.closeCompletely = function () {
         thisPlugin.isActive = false;
-        pdr.remove();
-        pdl.remove();
+        if (pdr) pdr.remove();
+        if (pdl) pdl.remove();
         pdr = null;
-        pdl = null; //why?  if picker is closed,  then there is no parent to remove from and remove() does not work;
-        mobWrapper.remove();
+        pdl = null; //why null?  if picker is closed,  then there is no parent to remove from and remove() does not work;
+        mobWrapper?.remove();
         remListeners();
         picker.off('pickerOpened', wait4pckr);
         picker.off('pickerClosed', remListeners);
         document.body.classList.remove('pickerTools-mobile', 'pickerTools-desk');
         removeGlobalCss();
     };
+
+    thisPlugin.exports = pt;
+
+    onDestroy(() => {
+        //dont do anything
+    });
 </script>
 
 <style lang="less">
