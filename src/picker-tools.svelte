@@ -1,17 +1,17 @@
 Adding pickertools to the picker ...
 
 <script lang="ts">
-    import { onDestroy, onMount } from 'svelte';
+    import {  onMount } from 'svelte';
     import store from '@windy/store';
-    import exports from './pickertools_main.js';
+    import {init} from './pickertools_main.js';
     import config from './pluginConfig';
 
-    const { title, name } = config;
+    const {  name } = config;
     const thisPlugin = W.plugins[name];
 
     onMount(() => {
     
-        exports.init();
+        init();
 
         // Close immediately,   no need for delay,  just nice to see whats happening for now
         setTimeout(() => {

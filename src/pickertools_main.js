@@ -25,8 +25,8 @@ let pckr = { _icon: null };
 let mobilePicker = rs.isMobileOrTablet;
 
 /** lru list of plugins using the picker divs  */
-let leftDivPlugins = [],
-    rightDivPlugins = [];
+let leftPlugins = [],
+    rightPlugins = [];
 
 let leftDivAct, rightDivAct;
 
@@ -256,7 +256,7 @@ const drag = function (cbf, interv = 100,) {
 
 /**  if no dragListeners and no plugins using the left or right divs,  close completeley */
 function checkIfMustClose() {
-    if (dragFxs.lenght == 0 && leftDivPlugins.length == 0 && rightDivPlugins.length == 0) {
+    if (dragFxs.lenght == 0 && leftPlugins.length == 0 && rightPlugins.length == 0) {
         closeCompletely();
     }
 }
@@ -280,45 +280,43 @@ const setActivePlugin = plugin => (activePlugin = plugin);
 const getActivePlugin = () => activePlugin;
 
 function checkLeftDiv() {
-    if (leftDivAct !== leftDivPlugins[0]) {
+    if (leftDivAct !== leftPlugins[0]) {
         pdl?.remove();
     }
-    leftDivAct = leftDivPlugins[0];
+    leftDivAct = leftPlugins[0];
 }
 function checkRightDiv() {
-    console.log("checking right div", rightDivAct, rightDivPlugins[0]);
-    if (rightDivAct !== rightDivPlugins[0]) {
+    if (rightDivAct !== rightPlugins[0]) {
         console.log("pdr", pdr);
         pdr?.remove();
     }
-    rightDivAct = rightDivPlugins[0];
-    console.log("rightDivACt", rightDivAct);
+    rightDivAct = rightPlugins[0];
 }
 
-const addLeftDivPlugin = (plugin) => {
-    leftDivPlugins = leftDivPlugins.filter(p => p !== plugin);
-    leftDivPlugins.unshift(plugin);
+const addLeftPlugin = (plugin) => {
+    leftPlugins = leftPlugins.filter(p => p !== plugin);
+    leftPlugins.unshift(plugin);
     checkLeftDiv();
 };
 
-const getLeftDivPlugin = () => leftDivAct;
+const getLeftPlugin = () => leftDivAct;
 
-const remLeftDivPlugin = plugin => {
-    leftDivPlugins = leftDivPlugins.filter(p => p !== plugin);
+const remLeftPlugin = plugin => {
+    leftPlugins = leftPlugins.filter(p => p !== plugin);
     checkLeftDiv();
     checkIfMustClose();
 };
 
-const addRightDivPlugin = plugin => {
-    rightDivPlugins = rightDivPlugins.filter(p => p !== plugin);
-    rightDivPlugins.unshift(plugin);
+const addRightPlugin = plugin => {
+    rightPlugins = rightPlugins.filter(p => p !== plugin);
+    rightPlugins.unshift(plugin);
     checkRightDiv();
 };
 
-const getRightDivPlugin = () => rightDivPlugins[0];
+const getRightPlugin = () => rightPlugins[0];
 
-const remRightDivPlugin = plugin => {
-    rightDivPlugins = rightDivPlugins.filter(p => p !== plugin);
+const remRightPlugin = plugin => {
+    rightPlugins = rightPlugins.filter(p => p !== plugin);
     checkRightDiv();
     checkIfMustClose();
 };
@@ -346,10 +344,9 @@ const closeCompletely = function () {
     hasHooks = false;
 };
 
-
+// these are not exported to the svelte plugin,  rather attached as W.plugins['windy-plugin-picker-tools].exports
 const exports = {
     pckr,
-    init,
     fillRightDiv,
     fillLeftDiv,
     isOpen,
@@ -358,12 +355,12 @@ const exports = {
     dragOff,
     setActivePlugin,
     getActivePlugin,
-    addLeftDivPlugin,
-    getLeftDivPlugin,
-    remLeftDivPlugin,
-    addRightDivPlugin,
-    getRightDivPlugin,
-    remRightDivPlugin
+    addLeftPlugin,
+    getLeftPlugin,
+    remLeftPlugin,
+    addRightPlugin,
+    getRightPlugin,
+    remRightPlugin
 }
 
-export default exports;
+export {init}

@@ -30,5 +30,5 @@
             ],
         }
     },
-    "include": ["**/*.ts", "**/*.svelte"],
+    "include": ["**/*.ts", "**/*.svelte", "src/pickertools_main.js"],
 }

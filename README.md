@@ -1,21 +1,66 @@
-# Windy Plugin Template
+# Picker tools
 
-Template for development of Windy Plugins.
+Plugin that adds a drag listener to the picker marker in desktop,  or to the map in mobile.  
 
-**Documentation at: [https://docs.windy-plugins.com/](https://docs.windy-plugins.com/)**
+Also adds Divs to the left or right of the picker.  
 
-# CHANGELOG
+This is not a standalone plugin.  It  provides methods,  which can then be used by other plugins.  
 
--   2.0.0
-    -   Completely new version of the plugin system based in Windy client v42+
--   1.0.0
-    -   New rollup compiler, no more riot architecture
-    -   Updated examples for Windy client v39
--   0.4.0
-    -   Added `plugin-data-loader` to the Plugins API
--   0.3.0
-    -   Examples moved to examples dir
--   0.2.0
-    -   Fixed wrong examples
--   0.1.1
-    -   Initial version of this repo
+## Methods:
+
+These methods live in `W.plugins['windy-plugin-picker-tools'].exports` :
+
+`drag( cbf , interval )` : cbf is a callback function receiving coords  and interval is ms,  interval at which the cbf is called when dragged,  default is 100.  
+
+`dragOff( cbf )` : removes the cbf.
+
+`getParams()` : returns the coords,  `isOpen()` does the same.  
+
+`fillRightDiv and fillLeftDiv ( text | DOM structure where the top element is a DIV)` : Fills the left and right divs respectively.  
+
+`addLeftPlugin and addRightPlugin ( plugin-name )` :  
+Adds your plugin name to a list of plugins,  where the last plugin added has priority.  
+
+`getLeftPlugin() and getRightPlugin()` :  Returns the name of the 1st of each list.  At the moment,  the controlling plugin should check if it has priority so:
+ ``` 
+ if (getLeftPlugin() == "windy-plugin-my-plugin") fillLeftDiv( html ) 
+ ```  
+
+`remLeftPlugin and remRightPlugin (plugin-name)` : Removes the plugin-name from the list.
+
+`setActivePlugin( name ) and getActivePlugin` : Avoid using these.   
+
+## Import these functions like this:
+
+```
+let pickerT;
+installExternalPlugin(url, 'url')
+    .then(() => plugins['windy-plugin-picker-tools'].open())
+    .then(() => plugins['windy-plugin-picker-tools'].exports)
+    .then(exports => pickerT = exports);
+```
+Look at one of my plugins to see how it works.
+
+## Closing 'windy-plugin-picker-tools'
+
+This plugin will automatically close when the leftPlugin and rightPlugin lists are empty,  and all the cbfs have been removed. 
+
+
+_This plugin is a work in progress._   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

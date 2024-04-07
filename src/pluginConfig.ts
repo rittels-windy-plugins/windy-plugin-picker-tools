@@ -2,7 +2,7 @@ import type { ExternalPluginConfig } from '@windy/interfaces';
 
 const config: ExternalPluginConfig = {
     name: 'windy-plugin-picker-tools',
-    version: '0.1.0',
+    version: '0.0.1',
     icon: '🔌',
     title: 'Picker Tools',
     description: 'Picker Tools',
