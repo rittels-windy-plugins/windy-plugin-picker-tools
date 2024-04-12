@@ -1,6 +1,3 @@
-
-console.log("RUNNING PICKERTOOLS");
-
 import plugins from '@windy/plugins';
 import { map } from '@windy/map';
 import { emitter as picker } from '@windy/picker';
@@ -9,7 +6,6 @@ import utils from '@windy/utils';
 
 import config from './pluginConfig.js';
 import { insertGlobalCss, removeGlobalCss } from './globalCss.js';
-
 
 const { log } = console;
 const { title, name } = config;
@@ -56,7 +52,7 @@ const init = function () {
     insertGlobalCss();
     document.body.classList.add(mobilePicker ? 'pickerTools-mobile' : 'pickerTools-desk');
     thisPlugin.closeCompletely = closeCompletely;
-    if(!thisPlugin.exports) thisPlugin.exports = exports;
+    if (!thisPlugin.exports) thisPlugin.exports = exports;
 }
 
 //// send text to picker div.
@@ -166,12 +162,12 @@ const getParams = function () {
         false;
     return params;
 };
-//};
+
 
 let dragFxs = [];
 
 /**
- * triggers array of  fxs in dragFxs,  when picker marker dragged or map dragged (depending on mobilePicker)
+ * triggers array of fxs in dragFxs,  when picker marker dragged or map dragged (depending on mobilePicker)
  */
 function onDrag(e) {
     let getLL = ll => {
@@ -244,9 +240,12 @@ function remListeners() {
  * @param {*} interv,   by default the picker is cbf is requested every 100ms when dragged.
  */
 const drag = function (cbf, interv = 100,) {
+    // Do not add to dragFxs if the function is already added, except if has a different interval.  
+    // This is obviously not applicable if same fun is added from a different context
+    if (dragFxs.some(f => f.cbf == cbf && f.interv == interv)) return;
     dragFxs.push({ cbf, interv, ready: true, sendIfNotMoved: null }); //sendIfNotMoved : send coords if map or picker has not moved after the interval.
 
-    wait4pckr(0); //in case picker has already been opened;
+    wait4pckr(0); //in case picker has already been opened
     //error occurs if resubscribe,  I dont think it matters though:
     if (dragFxs.length == 1) {
         picker.on('pickerOpened', wait4pckr);
@@ -363,4 +362,4 @@ const exports = {
     remRightPlugin
 }
 
-export {init}
+export { init }

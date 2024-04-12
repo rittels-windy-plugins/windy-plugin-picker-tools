@@ -2,12 +2,12 @@ import type { ExternalPluginConfig } from '@windy/interfaces';
 
 const config: ExternalPluginConfig = {
     name: 'windy-plugin-picker-tools',
-    version: '0.0.1',
+    version: '0.1.1',
     icon: '🔌',
     title: 'Picker Tools',
     description: 'Picker Tools',
     author: 'Rittels',
-    repository: 'xxx',
+    repository: '',
     desktopUI: 'embedded',
     mobileUI: 'small',
     //routerPath: '/my-plugin',

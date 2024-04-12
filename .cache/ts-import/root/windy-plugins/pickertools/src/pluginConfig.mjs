@@ -1,11 +1,11 @@
 const config = {
     name: 'windy-plugin-picker-tools',
-    version: '0.1.0',
+    version: '0.1.1',
     icon: '🔌',
     title: 'Picker Tools',
     description: 'Picker Tools',
     author: 'Rittels',
-    repository: 'xxx',
+    repository: '',
     desktopUI: 'embedded',
     mobileUI: 'small',
     //routerPath: '/my-plugin',

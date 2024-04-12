@@ -3,11 +3,13 @@ Adding pickertools to the picker ...
 <script lang="ts">
     import {  onMount } from 'svelte';
     import store from '@windy/store';
+    import plugins from '@windy/plugins';
+    
     import {init} from './pickertools_main.js';
     import config from './pluginConfig';
 
     const {  name } = config;
-    const thisPlugin = W.plugins[name];
+    const thisPlugin = plugins[name];
 
     onMount(() => {
     
