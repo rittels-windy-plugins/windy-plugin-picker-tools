@@ -36,8 +36,7 @@ Adds your plugin name to a list of plugins,  where the last plugin added has pri
 let pickerT;
 installExternalPlugin(url, 'url')
     .then(() => plugins['windy-plugin-picker-tools'].open())
-    .then(() => plugins['windy-plugin-picker-tools'].exports)
-    .then(exports => pickerT = exports);
+    .then(() => pickerT = plugins['windy-plugin-picker-tools'].exports);
 ```
 Look at one of my plugins to see how it works.
 
